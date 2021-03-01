@@ -17,7 +17,7 @@ def create_database_tables():
     connection = sqlite3.connect('Users.db')
     print("Databases has opened")
 
-    connection.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER, username TEXT)")
+    connection.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER, name TEXT, username TEXT, password INTEGER, city TEXT)")
     print("Created user table successfully")
     connection.close()
     # cursor = connection.cursor()
@@ -45,8 +45,11 @@ def new_user():
                 cur = con.cursor()
                 cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
                 con.commit()
+                
+
                 msg = name = "was successfully added to the database."
                 print("New user has been added")
+
 
         except Exception as e:
             con.rollback()
