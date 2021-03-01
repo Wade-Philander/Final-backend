@@ -34,14 +34,15 @@ def new_user():
         msg = None
 
         try:
-            name = request.form['name']
-            username = request.form['username']
-            password = request.form['password']
-            city = request.form['city']
+            post_data = request.get_json()
+            name = request.post_data['name']
+            username = request.post_data['username']
+            password = request.post_data['password']
+            city = request.post_data['city']
 
             with sqlite3.connect('Users.db') as con:
                 cur = con.cursor()
-                cur.execute("INSERT INTO Users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
+                cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
                 con.commit()
                 msg = "was successfully added to the database."
                 print("New user has been added")
