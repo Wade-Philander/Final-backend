@@ -17,15 +17,13 @@ def create_database_tables():
     connection = sqlite3.connect('Users.db')
     print("Databases has opened")
 
-    connection.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER, name TEXT, username TEXT, password INTEGER, city TEXT)")
+    connection.execute("CREATE TABLE IF NOT EXISTS users(name TEXT, username TEXT, password INTEGER, city TEXT)")
     print("Created user table successfully")
     connection.close()
     # cursor = connection.cursor()
     # cursor.execute('')
     # cursor.execute()
     #cursor = sql.commit()
-create_database_tables()
-
 #*******************************************  ADD NEW USER  ******************************************************************
 
 
@@ -43,11 +41,9 @@ def new_user():
 
             with sqlite3.connect('Users.db') as con:
                 cur = con.cursor()
-                cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
+                cur.execute("INSERT INTO Users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
                 con.commit()
-                
-
-                msg = name = "was successfully added to the database."
+                msg = "was successfully added to the database."
                 print("New user has been added")
 
 
@@ -56,8 +52,9 @@ def new_user():
             msg = "Error occurred: " +str(e)
 
         finally:
-            con.close()
+            
             return jsonify (msg = msg)
+            con.close()
 
 
 #**************************************************  SHOW USERS DATABASE  **************************************************************
