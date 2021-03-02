@@ -13,6 +13,7 @@ def dict_factory(cursor, row):
     return d
 
 
+                
 def create_database_tables():
     connection = sqlite3.connect('Users.db')
     print("Databases has opened")
@@ -25,37 +26,33 @@ create_database_tables()
     # cursor.execute()
     #cursor = sql.commit()
 #*******************************************  ADD NEW USER  ******************************************************************
+@app.route('/')
+def register():
+    return render_template('register.html')
 
-
+@app.route('/')
 @app.route('/add-new-user/', methods=['POST'])
 def new_user():
-    if request.method =="POST":
-        
-        msg = None
+    try:
+        # post_data = request.get_json()
+        name = request.form['name']
+        username = request.form['username']
+        password = request.form['password']
+        city = request.form['city']
 
-        try:
-            post_data = request.get_json()
-            name = request.post_data['name']
-            username = request.post_data['username']
-            password = request.post_data['password']
-            city = request.post_data['city']
-
-            with sqlite3.connect('Users.db') as con:
-                cur = con.cursor()
-                cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
-                con.commit()
-                msg = "was successfully added to the database."
-                print("New user has been added")
-
-
-        except Exception as e:
-            con.rollback()
-            msg = "Error occurred: " +str(e)
-
-        finally:
+        with sqlite3.connect('Users.db') as con:
+            cur = con.cursor()
+            cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
+            con.commit()
+            msg = username + " was successfully added to the database."
+            print("New user has been added")
+    except Exception as e:
+        con.rollback()
+        msg = "Error occurred: " +str(e)
+    finally:
+        con.close()
+    return jsonify (msg = msg)
             
-            return jsonify (msg = msg)
-            con.close()
 
 
 #**************************************************  SHOW USERS DATABASE  **************************************************************
@@ -63,7 +60,6 @@ def new_user():
 @app.route('/show-users/', methods=["GET"])
 
 def show_users():
-    records = []
     try:
         with sqlite3.connect('Users.db') as con:
             con.row_factory = dict_factory
@@ -78,7 +74,7 @@ def show_users():
 
     finally:
         con.close()
-        return jsonify (records)
+    return jsonify (records)
 
 #*************************************LOGIN PAGE*********************************************************
 #*************************************LOGIN PAGE********************************************************
