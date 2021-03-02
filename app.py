@@ -16,10 +16,10 @@ def dict_factory(cursor, row):
 def create_database_tables():
     connection = sqlite3.connect('Users.db')
     print("Databases has opened")
-
     connection.execute("CREATE TABLE IF NOT EXISTS users(name TEXT, username TEXT, password INTEGER, city TEXT)")
     print("Created user table successfully")
     connection.close()
+create_database_tables()
     # cursor = connection.cursor()
     # cursor.execute('')
     # cursor.execute()
