@@ -21,10 +21,6 @@ def create_database_tables():
     print("Created user table successfully")
     connection.close()
 create_database_tables()
-    # cursor = connection.cursor()
-    # cursor.execute('')
-    # cursor.execute()
-    #cursor = sql.commit()
 #*******************************************  ADD NEW USER  ******************************************************************
 @app.route('/')
 @app.route('/register/')
@@ -106,8 +102,3 @@ def login():
         con.close()
 
         return 
-
-# def login_user():
-#     # get form data
-#     # check db 
-#     pass
