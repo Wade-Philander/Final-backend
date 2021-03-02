@@ -57,7 +57,7 @@ def new_user():
 
 
 #**************************************************  SHOW USERS DATABASE  **************************************************************
-
+@app.route('/')
 @app.route('/show-users/', methods=["GET"])
 
 def show_users():
