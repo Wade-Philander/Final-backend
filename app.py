@@ -27,6 +27,7 @@ create_database_tables()
     #cursor = sql.commit()
 #*******************************************  ADD NEW USER  ******************************************************************
 @app.route('/')
+@app.route('/register/')
 def register():
     return render_template('register.html')
 
