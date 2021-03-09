@@ -124,16 +124,16 @@ def login():
 @app.route('/delete-user/<int:id>/', methods=["DELETE"])
 def delete_user(id):
 
-msg = None
-try:
-    with sqlite3.connect('Users.db') as con:
-        cur = con.cursor()
-        cur.execute("DELETE FROM student WHERE id=" + str(id))
-        con.commit()
-        msg = "Your Profile was deleted successfully from the database."
-except Exception as e:
-    con.rollback()
-    msg = "Error occurred when deleting a student in the database: " + str(e)
-finally:
-    con.close()
-    return jsonify(msg=msg)
+    msg = None
+    try:
+        with sqlite3.connect('Users.db') as con:
+            cur = con.cursor()
+            cur.execute("DELETE FROM student WHERE id=" + str(id))
+            con.commit()
+            msg = "Your Profile was deleted successfully from the database."
+    except Exception as e:
+        con.rollback()
+        msg = "Error occurred when deleting a student in the database: " + str(e)
+    finally:
+        con.close()
+        return jsonify(msg=msg)
