@@ -12,30 +12,38 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-
+# def drop():
+#      app = Flask(__name__)
+#      connection = sqlite3.connect('Users.db')
+#      connection.execute("DROP TABLE users;")
+#      print("DROPPED")
+#      connection.close()
+    
+# drop()
+    
                 
 def create_database_tables():
     connection = sqlite3.connect('Users.db')
     print("Databases has opened")
-    connection.execute("CREATE TABLE IF NOT EXISTS users(name TEXT, username TEXT, password INTEGER, city TEXT)")
+    c = connection.cursor()
+
+    c.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT, username TEXT, password TEXT, city TEXT)")
     print("Created user table successfully")
+    c.execute("SELECT * FROM users")
+    print(c.fetchall())
     connection.close()
 create_database_tables()
-#*******************************************  ADD NEW USER  ******************************************************************
-@app.route('/')
-@app.route('/register/')
-def register():
-    return render_template('register.html')
 
+#*******************************************  ADD NEW USER  ******************************************************************
 @app.route('/')
 @app.route('/add-new-user/', methods=['POST'])
 def new_user():
     try:
-        # post_data = request.get_json()
-        name = request.form['name']
-        username = request.form['username']
-        password = request.form['password']
-        city = request.form['city']
+        post_data = request.get_json()
+        name = post_data['name']
+        username = post_data['username']
+        password = post_data['password']
+        city = post_data['city']
 
         with sqlite3.connect('Users.db') as con:
             cur = con.cursor()
@@ -49,8 +57,6 @@ def new_user():
     finally:
         con.close()
     return jsonify (msg = msg)
-            
-
 
 #**************************************************  SHOW USERS DATABASE  **************************************************************
 @app.route('/')
@@ -63,6 +69,8 @@ def show_users():
             cur = con.cursor()
             cur.execute("SELECT * From users")
             records = cur.fetchall()
+            for i in records:
+                print(i)
             print("Here are the users")
 
     except Exception as e:
@@ -73,32 +81,60 @@ def show_users():
         con.close()
     return jsonify (records)
 
+#************************************* SHOW PROFILE*********************************************************
+@app.route('/show_profile/', methods=['GET'])
+def show_profile():
+    try:
+        post_data = request.get_json()
+        name = post_data['name']
+        username = post_data['username']
+
+        with sqlite3.connect('Users.db') as con:
+            con.row_factory = dict_factory
+            cur = con.cursor()
+            cur.execute("SELECT * FROM users where name = ? and username = ?" (name, username) ) 
+            records = cur.fetchone()
+            print("profile shown")
+
+    except Exception as e:
+        con.rollback()
+        print("Can't view profile: " +str(e))
+
+    finally:
+        con.close()
+    return jsonify (records)
+
 #*************************************LOGIN PAGE*********************************************************
-#*************************************LOGIN PAGE********************************************************
 
 @app.route('/login-user/', methods=['GET'])
 
 def login():
     try:
-        username = request.form['username']
-        password = request.form['password']
-
-        con = "select * from users where username = ? and password = ?"
-        mycursor.execute(con, [(username),(password)])
-        result = mycursor.fetchall()
-
-        if user:
-            for i in user:
-                login_user()
-                print("Logged in successfully")
-        else:
-            print("Error in verify function")
-            pass
-
+        with sqlite3.connect('Users.db') as con:
+            con.row_factory = dict_factory
+            cur = con.cursor()
+            cur.execute("SELECT * From users")
+            row = cur.fetchall()
     except Exception as e:
-        con.rollback()
-        print("Please enter a existing user username and password") + str(e)
-    finally:
-        con.close()
+        print("Error: " + str(e))
+    return jsonify (row)
 
-        return 
+
+# *****************************************************DELETE PROFILE**********************************************
+
+ @app.route('/delete-user/<int:id>/', methods=["DELETE"])
+ def delete_user(id):
+
+     msg = None
+     try:
+         with sqlite3.connect('Users.db') as con:
+             cur = con.cursor()
+             cur.execute("DELETE FROM student WHERE id=" + str(id))
+             con.commit()
+             msg = "Your Profile was deleted successfully from the database."
+     except Exception as e:
+         con.rollback()
+         msg = "Error occurred when deleting a student in the database: " + str(e)
+     finally:
+         con.close()
+         return jsonify(msg=msg)
