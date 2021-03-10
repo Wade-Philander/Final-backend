@@ -35,7 +35,6 @@ def create_database_tables():
 create_database_tables()
 
 #*******************************************  ADD NEW USER  ******************************************************************
-@app.route('/')
 @app.route('/add-new-user/', methods=['POST'])
 def new_user():
     try:
@@ -119,21 +118,21 @@ def login():
     return jsonify (row)
 
 
-# *****************************************************DELETE PROFILE**********************************************
+# ****************************************DELETE PROFILE*************************************
 
-@app.route('/delete-user/<int:id>/', methods=["DELETE"])
+@app.route('/delete-user/<int:id>/', methods=["GET", "POST"])
 def delete_user(id):
 
     msg = None
     try:
         with sqlite3.connect('Users.db') as con:
             cur = con.cursor()
-            cur.execute("DELETE FROM student WHERE id=" + str(id))
+            cur.execute("DELETE FROM users WHERE id=" + str(id))
             con.commit()
             msg = "Your Profile was deleted successfully from the database."
     except Exception as e:
         con.rollback()
-        msg = "Error occurred when deleting a student in the database: " + str(e)
+        msg = "Error occurred when deleting a users in the database: " + str(e)
     finally:
         con.close()
-        return jsonify(msg=msg)
+        return jsonify(msg=msg) 
