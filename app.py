@@ -161,25 +161,3 @@ def delete_user(id):
         return jsonify(msg=msg) 
 
 # ******************************************************************************************************************************************************
-
-@app.route('/update-user/', methods=['PUT'])
-def new_user():
-    try:
-        post_data = request.get_json()
-        name = post_data['name']
-        username = post_data['username']
-        password = post_data['password']
-        city = post_data['city']
-
-        with sqlite3.connect('Users.db') as con:
-            cur = con.cursor()
-            cur.execute("UPDATE users SET (name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
-            con.commit()
-            msg = username + " was successfully pdated."
-            print("updated")
-    except Exception as e:
-        con.rollback()
-        msg = "Error occurred: " +str(e)
-    finally:
-        con.close()
-    return jsonify (msg = msg)
