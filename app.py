@@ -118,27 +118,27 @@ def login():
     return jsonify (row)
 
 #*******************************************  ADD NEW USER  ******************************************************************
-@app.route('/add-new-user/', methods=['POST'])
-def new_user():
-    try:
-        post_data = request.get_json()
-        name = post_data['name']
-        username = post_data['username']
-        password = post_data['password']
-        city = post_data['city']
+# @app.route('/add-new-user/', methods=['POST'])
+# def new_user():
+#     try:
+#         post_data = request.get_json()
+#         name = post_data['name']
+#         username = post_data['username']
+#         password = post_data['password']
+#         city = post_data['city']
 
-        with sqlite3.connect('Users.db') as con:
-            cur = con.cursor()
-            cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
-            con.commit()
-            msg = username + " was successfully added to the database."
-            print("New user has been added")
-    except Exception as e:
-        con.rollback()
-        msg = "Error occurred: " +str(e)
-    finally:
-        con.close()
-    return jsonify (msg = msg)
+#         with sqlite3.connect('Users.db') as con:
+#             cur = con.cursor()
+#             cur.execute("INSERT INTO users(name, username, password, city) VALUES (?, ?, ?, ?)", (name, username, password, city))
+#             con.commit()
+#             msg = username + " was successfully added to the database."
+#             print("New user has been added")
+#     except Exception as e:
+#         con.rollback()
+#         msg = "Error occurred: " +str(e)
+#     finally:
+#         con.close()
+#     return jsonify (msg = msg)
 
     
 # ****************************************DELETE PROFILE*************************************
